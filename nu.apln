@@ -1,0 +1,73 @@
+:Namespace nu ⍝ not unix yy@yiyus.info 2024
+
+    ⍝ file management
+    'Files'⎕CY'files'
+    ∇ r←{a}cd w
+        r←Files.GetCurrentDirectory ⋄ Files.SetCurrentDirectory¨⊆w
+        :If 0≠⎕NC'a'
+            Files.SetCurrentDirectory¨⊆a ⋄ r←Files.GetCurrentDirectory
+        :EndIf
+    ∇
+    pushd←{⍺←⊢ ⋄ d←cd⍵⍵ ⋄ r←⍺ ⍺⍺ ⍵ ⋄ _←cd d ⋄ r}
+    mkdir←{0≠⎕NC'⍺':_←+/∇pushd⍺¨⊆⍵ ⋄ _←+/3⎕MKDIR¨⊆⍵}
+       mv←{⍺←'.' ⋄ _←⊃+/(⊆⍺)⎕NMOVE¨⊃,/(⎕NINFO⍠1)¨⊆⍵}
+       cp←{⍺←'.' ⋄ _←+/(⊆⍺)(⎕NCOPY⍠'IfExists' 'Replace')¨⊃,/(⎕NINFO⍠1)¨⊆⍵}
+       ls←{⍺←0 ⋄ ⊃,¨/0 2 3 5∘(⎕NINFO⍠1⍠'Recurse'(2⍺))¨'../*'@(≡∘'..'¨)'*'@(≡∘'.'¨)⊆⍵}
+
+    ⍝ text editing
+      cat←{⍺←⊢ ⋄ I←⊃⎕NINFO⍠1 ⋄ ⍺,⍥{1<≡⍵:⍵ ⋄ ⍵≡'.':0 I'*' ⋄ ⍵≡'..':0 I'../*' ⋄ 1=1 I⍵:0 I⍵,'/*' ⋄ ⊃⎕NGET⍵1}⍵}
+      tac←{0=⎕NC'⍺': ⌽cat⍵ ⋄ ⍵,⍥(⌽cat)⍺}
+     head←{⍺←10 ⋄ ( ⍺⌊≢⍵)↑⍵}∘cat ⋄  grep←{0=⎕NC'⍺':∇∘man⊢⍵ ⋄ /⍨∘((0<∘≢⍺⎕S 3)¨)⍨cat⍵} ⋄  sort←{⍺←⍵ ⋄ (⊂⍋↑⍺)⌷⍵}∘cat
+     tail←{⍺←10 ⋄ (-⍺⌊≢⍵)↑⍵}∘cat ⋄ vgrep←{⍺←'^\s*$'        ⋄ /⍨∘((0=∘≢⍺⎕S 3)¨)⍨cat⍵} ⋄ rsort←⌽⍤sort
+       ed←{⍺←⊢ ⋄ _←⍵ tee ⍺ ⍺⍺ cat ⍵}
+        x←{⍺←⊢ ⋄ 3=⎕NC'⍺⍺':⍵⍵⎕R(⍺∘⍺⍺{⍺⍺ ⍵.Match})⍵ ⋄ 3≠⎕NC'⍺':⎕SIGNAL 6 ⋄ ⍵⍵⎕R⍺⍺⊢⍵}
+        y←{⍺←⊢ ⋄ ⍺(⍺⍺x('(?<=(',⍵⍵,')|^)(.*?)(?=(',⍵⍵,')|$)'))⍵}
+        g←{⍺←⊢ ⋄ ⍺∘⍺⍺¨@(0<(≢⍵⍵⎕S⊢)¨)⊆⍵}
+        v←{⍺←⊢ ⋄ ⍺∘⍺⍺¨@(0=(≢⍵⍵⎕S⊢)¨)⊆⍵}
+      cut←{⍺←' ' ⋄ ↓⍉↑⍺(≠⊆⊢)¨⍵}∘cat
+     join←{⍺←' '⊣⍣(2<≡⍵)⊢⎕UCS 10 ⋄ 2>≡⍵:⍵ ⋄ 2=≡⍵:⊃(⊣,⍺,⊢)/⍵ ⋄ ⊃(⊣,¨⍺,¨⊢)/⍵}∘cat
+      tee←{w←⍕(⍪∘↑¨⊂[2])⍣(0>≡⍵)↑⍵ ⋄ 0=⎕NC'⍺':_←⍵⊣⎕←w ⋄ _←⍵⊣(⊂↓w)⎕NPUT⍺1}
+       wc←{⍺←'\S+' ⋄ +/(≢⍺⎕S⊢)¨⍵}∘cat
+
+    ⍝ manual
+     man ←⊂'NOT UNIX'
+     man,←⊂''
+     man,←⊂'File management'
+     man,←⊂''
+     man,←⊂'            n ls f1 f2 ...    list f1 f2 ... up to depth n, default 0'
+     man,←⊂'    f3 f4 ... mv f1 f2 ...    move f1 f2 ... to f3 f4 ... (scalar extension), default /dev/null'
+     man,←⊂'    f3 f4 ... cp f1 f2 ...    copy f1 f2 ... to f3 f4 ... (scalar extension), default .'
+     man,←⊂'        d3 mkdir d1 d2 ...    make dirs d1 d2 ... into dir d3, default .'
+     man,←⊂'              cd d1 d2 ...    change to directory d1/d2/... and return dir before changing'
+     man,←⊂'    d3 d4 ... cd d1 d2 ...    change to directory d1/d2/.../d3/d4/... and return dir after changing'
+     man,←⊂'           ⍺(⍺⍺ pushd d1)⍵    change to d, run ⍺ ⍺⍺ ⍵ and return to current dir, default ⊢'
+     man,←⊂''
+     man,←⊂'    with f1 f2 f3 f4 ... file (or dir) names, d1 d2 d3 d4 ... dir names, and n number'
+     man,←⊂''
+     man,←⊂'Text editing'
+     man,←⊂''
+     man,←⊂'           t2 cat t1    concatenate contents of t1 and t2, default ⍬'
+     man,←⊂'           t2 tac t1    concatenate reverse contents of t2 and t1, default ⍬'
+     man,←⊂'           n head t1    get first n lines of t1, default 10'
+     man,←⊂'           n tail t1    get last n lines of t1, default 10'
+     man,←⊂'          r  grep t1    get lines of t1 that match s, default grep this manul'
+     man,←⊂'          r vgrep t1    get lines of t1 that do not match s, default empty lines'
+     man,←⊂'          ⍺  sort t1    ascending sort lines of t1 according to ⍺, default t1'
+     man,←⊂'          ⍺ rsort t1    descending sort lines of t1 according to ⍺, default t1'
+     man,←⊂'           ⍺(⍺⍺ ed)f    run ⍺ ⍺⍺ cat f and save to f, default ⊢'
+     man,←⊂'         ⍺(⍺⍺ x ⍵⍵)s    substitute by ⍺⍺ or run ⍺∘⍺⍺ on matches of ⍵⍵ in s, default ⊢'
+     man,←⊂'         ⍺(⍺⍺ y ⍵⍵)s    substitute by ⍺⍺ or run ⍺∘⍺⍺ between matches of ⍵⍵ in s, default ⊢'
+     man,←⊂'         ⍺(⍺⍺ g ⍵⍵)s    run ⍺∘⍺⍺ s if s matches ⍵⍵, default ⊢'
+     man,←⊂'         ⍺(⍺⍺ v ⍵⍵)s    run ⍺∘⍺⍺ s if s does not match ⍵⍵, default ⊢'
+     man,←⊂'            c cut t1    cut t1 in fields with separator c, default space'
+     man,←⊂'    c join t1 t2 ...    join lines of t1 t2 ... with c, default space or new line'
+     man,←⊂'            f tee t1    save t1 to file f and return it, default stdout'
+     man,←⊂'             r wc t1    count occurences of r in t1, default words'
+     man,←⊂''
+     man,←⊂'    with t1 t2 ... text (string with dir or file name, or list of lines), n number,'
+     man,←⊂'    r regex (as a string), s string, c character and f file name'
+     man,←⊂''
+     man,←⊂'TODO: find, sed, awk, mkfifo, error checking (!), ...'
+     man,←⊂'SEE ALSO: unix, gnu, plan 9'
+     
+:EndNamespace
