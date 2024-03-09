@@ -2,7 +2,7 @@
   api: "nu",
   assets: "",
   description: "Not Unix",
-  documentation: "nu.ipynb",
+  documentation: "./nu.ipynb",
   files: "nu.ipynb",
   group: "yiyus",
   io: 0,
@@ -20,5 +20,5 @@
   tags: "tools,unix,text,files",
   tatin_version: "0.103.0",
   userCommandScript: "",
-  version: "0.0.1",
+  version: "0.0.1+1",
 }
