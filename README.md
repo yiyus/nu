@@ -2,13 +2,13 @@ NOT UNIX
                                                                                                    
 File management                                                                                    
                                                                                                    
-            n ls f1 f2 ...    list f1 f2 ... up to depth n, default 0                              
+           d1 ls f1 f2 ...    list f1 f2 ... into dir d1, default 0                                
     f3 f4 ... mv f1 f2 ...    move f1 f2 ... to f3 f4 ... (scalar extension), default /dev/null    
     f3 f4 ... cp f1 f2 ...    copy f1 f2 ... to f3 f4 ... (scalar extension), default .            
         d3 mkdir d1 d2 ...    make dirs d1 d2 ... into dir d3, default .                           
               cd d1 d2 ...    change to directory d1/d2/... and return dir before changing         
     d3 d4 ... cd d1 d2 ...    change to directory d1/d2/.../d3/d4/... and return dir after changing
-           ⍺(⍺⍺ pushd d1)⍵    change to d, run ⍺ ⍺⍺ ⍵ and return to current dir, default ⊢         
+           ⍺(⍺⍺ pushd d1)⍵    change to d1, run ⍺ ⍺⍺ ⍵ and return to current dir, default ⊢        
                                                                                                    
     with f1 f2 f3 f4 ... file (or dir) names, d1 d2 d3 d4 ... dir names, and n number              
                                                                                                    
@@ -31,9 +31,11 @@ Text editing
     c join t1 t2 ...    join lines of t1 t2 ... with c, default space or new line                  
             f tee t1    save t1 to file f and return it, default stdout                            
              r wc t1    count occurences of r in t1, default words                                 
+         d(⍺⍺ find)f    find file f with condition ⍺⍺ true, or matching ⍺⍺ at d, default .         
+                        (⍺⍺ gets a namespace argument with fields name bytes modified owner)       
                                                                                                    
     with t1 t2 ... text (string with dir or file name, or list of lines), n number,                
-    r regex (as a string), s string, c character and f file name                                   
+    r regex (as a string), s string, c character, f file name and d dir name                       
                                                                                                    
-TODO: find, sed, awk, mkfifo, error checking (!), ...                                              
+TODO: sed, awk, mkfifo, error checking (!), tests (!!), ...                                        
 SEE ALSO: unix, gnu, plan 9                                                                        
