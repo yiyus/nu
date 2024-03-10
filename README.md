@@ -2,7 +2,7 @@ NOT UNIX
                                                                                                    
 File management                                                                                    
                                                                                                    
-           d1 ls f1 f2 ...    list f1 f2 ... into dir d1, default 0                                
+           d1 ls f1 f2 ...    list f1 f2 ... from dir d1, default .                                
     f3 f4 ... mv f1 f2 ...    move f1 f2 ... to f3 f4 ... (scalar extension), default /dev/null    
     f3 f4 ... cp f1 f2 ...    copy f1 f2 ... to f3 f4 ... (scalar extension), default .            
         d3 mkdir d1 d2 ...    make dirs d1 d2 ... into dir d3, default .                           
@@ -18,7 +18,7 @@ Text editing
            t2 tac t1    concatenate reverse contents of t2 and t1, default ⍬                       
            n head t1    get first n lines of t1, default 10                                        
            n tail t1    get last n lines of t1, default 10                                         
-          r  grep t1    get lines of t1 that match s, default grep this manul                      
+          r  grep t1    get lines of t1 that match s, default grep this manual                     
           r vgrep t1    get lines of t1 that do not match s, default empty lines                   
           ⍺  sort t1    ascending sort lines of t1 according to ⍺, default t1                      
           ⍺ rsort t1    descending sort lines of t1 according to ⍺, default t1                     
@@ -32,7 +32,7 @@ Text editing
             f tee t1    save t1 to file f and return it, default stdout                            
              r wc t1    count occurences of r in t1, default words                                 
          d(⍺⍺ find)f    find file f with condition ⍺⍺ true, or matching ⍺⍺ at d, default .         
-                        (⍺⍺ gets a namespace argument with fields name bytes modified owner)       
+                        (⍺⍺ gets a namespace argument with fields: name bytes modified owner)      
                                                                                                    
     with t1 t2 ... text (string with dir or file name, or list of lines), n number,                
     r regex (as a string), s string, c character, f file name and d dir name                       
