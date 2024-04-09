@@ -10,8 +10,9 @@
 ∇
 pushd←{⍺←⊢ ⋄ d←cd⍵⍵ ⋄ r←⍺ ⍺⍺ ⍵ ⋄ _←cd d ⋄ r}
 mkdir←{0≠⎕NC'⍺':_←+/∇pushd⍺¨⊆⍵ ⋄ _←+/3⎕MKDIR¨⊆⍵}
-   mv←{⍺←'.' ⋄ _←⊃+/(⊆⍺)⎕NMOVE¨⊃,/(⎕NINFO⍠1)¨⊆⍵}
+  TMP←{0<≢⍵:⍵ ⋄ 11::'' ⋄ ⊃⎕NINFO 2⎕NQ#'GetEnvironment'⍺}/'TMP' 'TEMP' 'TMPDIR' ''
    cp←{⍺←'.' ⋄ _←+/(⊆⍺)(⎕NCOPY⍠'IfExists' 'Replace')¨⊃,/(⎕NINFO⍠1)¨⊆⍵}
+   mv←{0=⎕NC'⍺':TMP∇⍵ ⋄ _←⊃+/3⎕NDELETE⍠1¨⊆⍵⊣⍺cp⍵}
    ls←{⍺←0 ⋄ 2({'/',⍨¨@((1=⍵)⍨)⍺}/⍤↑,↓)⊃,¨/0 1 2 3 5∘(⎕NINFO⍠1⍠'Recurse'(2⍺))¨(⊂'../*')@(≡∘'..'¨)'*'@(≡∘'.'¨)⊆⍵}
 
 ⍝ text editing
@@ -26,7 +27,7 @@ mkdir←{0≠⎕NC'⍺':_←+/∇pushd⍺¨⊆⍵ ⋄ _←+/3⎕MKDIR¨⊆⍵}
     v←{⍺←⊢ ⋄ ⍺∘⍺⍺¨@(0=(≢⍵⍵⎕S⊢)¨)⊆⍵}
   cut←{⍺←' ' ⋄ ↓⍉↑⍺(≠⊆⊢)¨⍵}∘cat
  join←{⍺←' '⊣⍣(2<≡⍵)⊢⎕UCS 10 ⋄ 2>≡⍵:⍵ ⋄ 2=≡⍵:⊃(⊣,⍺,⊢)/⍵ ⋄ ⊃(⊣,¨⍺,¨⊢)/⍵}∘cat
-  tee←{w←⍕(⍪∘↑¨⊂[2])⍣(0>≡⍵)↑⍵ ⋄ 0=⎕NC'⍺':_←⍵⊣⎕←w ⋄ _←⍵⊣(⊂↓w)⎕NPUT⍺1}
+  tee←{w←⍕(⍪∘↑¨⊂[⎕IO+1])⍣(0>≡⍵)↑⍵ ⋄ 0=⎕NC'⍺':_←⍵⊣⎕←w ⋄ _←⍵⊣(⊂↓w)⎕NPUT⍺1}
    wc←{⍺←'\S+' ⋄ +/(≢⍺⎕S⊢)¨⍵}∘cat
  find←{
         0≠⎕NC'⍺':⊃,/⍺∇{⍺⍺pushd⍺⊢⍵}¨⍥(⊆∘,∘⊆)⍵ ⋄ l←↓⍉↑ls⊃,/⊃¨⎕NINFO⍠1⍠'Recurse'(2 ¯1)⊆,⊆⍵
@@ -39,7 +40,7 @@ mkdir←{0≠⎕NC'⍺':_←+/∇pushd⍺¨⊆⍵ ⋄ _←+/3⎕MKDIR¨⊆⍵}
  man,←⊂'File management'
  man,←⊂''
  man,←⊂'           d1 ls f1 f2 ...    list f1 f2 ... from dir d1, default .'
- man,←⊂'    f3 f4 ... mv f1 f2 ...    move f1 f2 ... to f3 f4 ... (scalar extension), default /dev/null'
+ man,←⊂'    f3 f4 ... mv f1 f2 ...    move f1 f2 ... to f3 f4 ... (scalar extension), default TMP (temp dir)'
  man,←⊂'    f3 f4 ... cp f1 f2 ...    copy f1 f2 ... to f3 f4 ... (scalar extension), default .'
  man,←⊂'        d3 mkdir d1 d2 ...    make dirs d1 d2 ... into dir d3, default .'
  man,←⊂'              cd d1 d2 ...    change to directory d1/d2/... and return dir before changing'
