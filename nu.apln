@@ -25,7 +25,7 @@ mkdir←{0≠⎕NC'⍺':_←+/∇pushd⍺¨⊆⍵ ⋄ _←+/3⎕MKDIR¨⊆⍵}
     y←{⍺←⊢ ⋄ ⍺(⍺⍺x('(?<=(',⍵⍵,')|^)(.*?)(?=(',⍵⍵,')|$)'))⍵}
     g←{⍺←⊢ ⋄ ⍺∘⍺⍺¨@(0<(≢⍵⍵⎕S⊢)¨)⊆⍵}
     v←{⍺←⊢ ⋄ ⍺∘⍺⍺¨@(0=(≢⍵⍵⎕S⊢)¨)⊆⍵}
-  cut←{⍺←' ' ⋄ ↓⍉↑⍺(≠⊆⊢)¨⍵}∘cat
+  cut←{(⍵∊⍨⎕UCS 10)∧(1=≡⍵)∧0=⎕NC'⍺':⊃¨(⎕UCS 10)∇,⊂⍵ ⋄ ⍺←' ' ⋄ ⍺{↓⍉↑⍺(≠⊆⊢)¨⊆⍵}∘cat⍵}
  join←{⍺←' '⊣⍣(2<≡⍵)⊢⎕UCS 10 ⋄ 2>≡⍵:⍵ ⋄ 2=≡⍵:⊃(⊣,⍺,⊢)/⍵ ⋄ ⊃(⊣,¨⍺,¨⊢)/⍵}∘cat
   tee←{w←⍕(⍪∘↑¨⊂[⎕IO+1])⍣(0>≡⍵)↑⍵ ⋄ 0=⎕NC'⍺':_←⍵⊣⎕←w ⋄ _←⍵⊣(⊂↓w)⎕NPUT⍺1}
    wc←{⍺←'\S+' ⋄ +/(≢⍺⎕S⊢)¨⍵}∘cat
@@ -64,7 +64,7 @@ mkdir←{0≠⎕NC'⍺':_←+/∇pushd⍺¨⊆⍵ ⋄ _←+/3⎕MKDIR¨⊆⍵}
  man,←⊂'         ⍺(⍺⍺ y ⍵⍵)s    substitute by ⍺⍺ or run ⍺∘⍺⍺ between matches of ⍵⍵ in s, default ⊢'
  man,←⊂'         ⍺(⍺⍺ g ⍵⍵)s    run ⍺∘⍺⍺ s if s matches ⍵⍵, default ⊢'
  man,←⊂'         ⍺(⍺⍺ v ⍵⍵)s    run ⍺∘⍺⍺ s if s does not match ⍵⍵, default ⊢'
- man,←⊂'            c cut t1    cut t1 in fields with separator c, default space'
+ man,←⊂'            c cut t1    cut t1 in fields with separator c, default space or new line'
  man,←⊂'    c join t1 t2 ...    join lines of t1 t2 ... with c, default space or new line'
  man,←⊂'            f tee t1    save t1 to file f and return it, default stdout'
  man,←⊂'             r wc t1    count occurences of r in t1, default words'

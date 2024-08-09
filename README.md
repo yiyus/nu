@@ -27,7 +27,7 @@ Text editing
          ⍺(⍺⍺ y ⍵⍵)s    substitute by ⍺⍺ or run ⍺∘⍺⍺ between matches of ⍵⍵ in s, default ⊢          
          ⍺(⍺⍺ g ⍵⍵)s    run ⍺∘⍺⍺ s if s matches ⍵⍵, default ⊢                                       
          ⍺(⍺⍺ v ⍵⍵)s    run ⍺∘⍺⍺ s if s does not match ⍵⍵, default ⊢                                
-            c cut t1    cut t1 in fields with separator c, default space                            
+            c cut t1    cut t1 in fields with separator c, default space or new line                
     c join t1 t2 ...    join lines of t1 t2 ... with c, default space or new line                   
             f tee t1    save t1 to file f and return it, default stdout                             
              r wc t1    count occurences of r in t1, default words                                  
