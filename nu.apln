@@ -3,13 +3,14 @@
 ⍝ file management
 'Files'⎕CY'files'
 ∇ r←{a}cd w
-    r←Files.GetCurrentDirectory ⋄ Files.SetCurrentDirectory¨⊆w
+    Files.SetCurrentDirectory¨⊆w
     :If 0≠⎕NC'a'
-        Files.SetCurrentDirectory¨⊆a ⋄ r←Files.GetCurrentDirectory
+    :AndIf 0<≢a←⊆a
+        3⎕MKDIR⊃a ⋄ Files.SetCurrentDirectory⊃a ⋄ a←(1↓a)cd'.'
     :EndIf
+    r←Files.GetCurrentDirectory
 ∇
-pushd←{⍺←⊢ ⋄ d←cd⍵⍵ ⋄ r←⍺ ⍺⍺ ⍵ ⋄ _←cd d ⋄ r}
-mkdir←{0≠⎕NC'⍺':_←+/∇pushd⍺¨⊆⍵ ⋄ _←+/3⎕MKDIR¨⊆⍵}
+pushd←{⍺←⊢ ⋄ d←cd'.' ⋄ _←cd⍵⍵ ⋄ r←⍺ ⍺⍺ ⍵ ⋄ _←cd d ⋄ r}
   TMP←{0<≢⍵:⍵ ⋄ 11::'' ⋄ ⊃⎕NINFO 2⎕NQ#'GetEnvironment'⍺}/'TMP' 'TEMP' 'TMPDIR' ''
    cp←{⍺←'.' ⋄ _←+/(⊆⍺)(⎕NCOPY⍠'IfExists' 'Replace')¨⊃,/(⎕NINFO⍠1)¨⊆⍵}
    mv←{0=⎕NC'⍺':TMP∇⍵ ⋄ _←⊃+/3⎕NDELETE⍠1¨⊆⍵⊣⍺cp⍵}
@@ -45,9 +46,8 @@ mkdir←{0≠⎕NC'⍺':_←+/∇pushd⍺¨⊆⍵ ⋄ _←+/3⎕MKDIR¨⊆⍵}
  man,←⊂'           d1 ls f1 f2 ...    list f1 f2 ... from dir d1, default .'
  man,←⊂'    f3 f4 ... mv f1 f2 ...    move f1 f2 ... to f3 f4 ... (scalar extension), default TMP (temp dir)'
  man,←⊂'    f3 f4 ... cp f1 f2 ...    copy f1 f2 ... to f3 f4 ... (scalar extension), default .'
- man,←⊂'        d3 mkdir d1 d2 ...    make dirs d1 d2 ... into dir d3, default .'
- man,←⊂'              cd d1 d2 ...    change to directory d1/d2/... and return dir before changing'
- man,←⊂'    d3 d4 ... cd d1 d2 ...    change to directory d1/d2/.../d3/d4/... and return dir after changing'
+ man,←⊂'              cd d1 d2 ...    change to directory d1/d2/... and return working directory'
+ man,←⊂'    d3 d4 ... cd d1 d2 ...    change to directory d1/d2/.../d3/d4/..., creating d3/d4/... if needed'
  man,←⊂'           ⍺(⍺⍺ pushd d1)⍵    change to d1, run ⍺ ⍺⍺ ⍵ and return to current dir, default ⊢'
  man,←⊂''
  man,←⊂'    with f1 f2 f3 f4 ... file (or dir) names, d1 d2 d3 d4 ... dir names, and n number'

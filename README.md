@@ -5,9 +5,8 @@ File management
            d1 ls f1 f2 ...    list f1 f2 ... from dir d1, default .                                 
     f3 f4 ... mv f1 f2 ...    move f1 f2 ... to f3 f4 ... (scalar extension), default TMP (temp dir)
     f3 f4 ... cp f1 f2 ...    copy f1 f2 ... to f3 f4 ... (scalar extension), default .             
-        d3 mkdir d1 d2 ...    make dirs d1 d2 ... into dir d3, default .                            
-              cd d1 d2 ...    change to directory d1/d2/... and return dir before changing          
-    d3 d4 ... cd d1 d2 ...    change to directory d1/d2/.../d3/d4/... and return dir after changing 
+              cd d1 d2 ...    change to directory d1/d2/... and return working directory            
+    d3 d4 ... cd d1 d2 ...    change to directory d1/d2/.../d3/d4/..., creating d3/d4/... if needed 
            ⍺(⍺⍺ pushd d1)⍵    change to d1, run ⍺ ⍺⍺ ⍵ and return to current dir, default ⊢         
                                                                                                     
     with f1 f2 f3 f4 ... file (or dir) names, d1 d2 d3 d4 ... dir names, and n number               
