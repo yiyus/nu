@@ -7,7 +7,7 @@ File management
     f3 f4 ... cp f1 f2 ...    copy f1 f2 ... to f3 f4 ... (scalar extension), default .             
               cd d1 d2 ...    change to directory d1/d2/... and return working directory            
     d3 d4 ... cd d1 d2 ...    change to directory d1/d2/.../d3/d4/..., creating d3/d4/... if needed 
-           ⍺(⍺⍺ pushd d1)⍵    change to d1, run ⍺ ⍺⍺ ⍵ and return to current dir, default ⊢         
+          ...(⍺⍺ at d1)...    run ⍺⍺ with given args in d1 and return to current dir, default ⊢     
                                                                                                     
     with f1 f2 f3 f4 ... file (or dir) names, d1 d2 d3 d4 ... dir names, and n number               
                                                                                                     
