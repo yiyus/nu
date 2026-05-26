@@ -1,86 +1,145 @@
-:Namespace nu ⍝ not unix yy@yiyus.info 2024
+:Namespace nu ⍝ not unix yy@yiyus.info 2024-2026
+
+DEBUG←0
+_←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ ⍺ ⍺⍺ ⍵}
+__←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ _←⍺ ⍺⍺ ⍵}
+
+⍝ navigation
+   _p←{(⊢⊢⍤/⍨1(⊢∨⌽)'/'∘≠)'/'@('\'∘=)⊃(⊣,'/',⊢)/⊆⍵} ⋄ _a←{⊃,/1⎕NPARTS ⍵} ⋄ _d←{'/'=⊃⌽⍵:⍵ ⋄ ⍵,'/'}
+   cd←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ (0≠⎕NC'⍺')∧0∊⍴⍵:¯1↓⊆⍺⊣∇⊃⌽⊆⍺
+       ⍺←'' ⋄ d←'/'@('\'∘=)⎕SE.UCMD⍕'cd'(⊃(⊣,'/',⊢)/⊆⍵) ⋄ d←'/',⍨⍣('/'≠⊃⌽d)⊢d ⋄ ~0∊⍴⍵:d←⍺,⊂d ⋄ d}
+
+⍝ file info
+  _ls←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ 1<|≡⍵:⊃,/⍺∘∇¨⍵ ⋄ 3≠⎕NC'⍺':∇('/',⍨⊃(⊣,'/',⊢)/⊆⍺),⍵ ⋄ 0∊⍴⍵:∇'*'
+       N←{0::⍵ ⋄ ('/'=⊃⌽⍵)∧∨/'*?'∊⍵:∇¯1↓⍵ ⋄ 1=⊃1⎕NINFO⍵:'*',⍨'/',⍨⍣('/'≠⊃⌽⍵)⊢⍵ ⋄ ⍵}
+       ⊃,/({'/',⍨¨@(1=d⍨)⊃_ d←⍵}0 1 ⍺⍺⍠1⍠'Follow'0 N)⍛{('/'=⊃∘⌽¨)⍛/⍣(('/'=⊃⌽⍵)∧∨/'*?'∊⍵)⊢⍺}¨⊆⍵}
+   ls←_p¨⎕NINFO _ls ⋄ find←(⊃,/)¨1⎕NPARTS⎕NINFO⍠'Recurse'(2 ¯1)_ls
+   lc←{⍺←10 ⋄ ⍕⍉c r⍴(c×r←⍺⌊⌈(≢l)÷c←4⌈⌈(≢l)÷⍺)↑l←ls ⍵}_
+   ll←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←16 ⋄ i←(⍺⌊≢)⍛↑⍒s←du ⍵ ⋄ l←ls ⍵
+       1↓⍤1⍕⍪(⍕(⍪↑)¨(⊂s[i])@(⎕IO+1)↓⍉↑0 2 3 5⎕NINFO l[i])('... ',⍣((⍺+1)<≢l)⊢⊂(⍕≢l),' files (total ',(⍕+/s),')')}
+   du←{0=⎕NC'⍺':(+/⍤∊2⎕NINFO find)¨⍵ ⋄ (⍺≤∇⍵)/⍵}_∘ls
+ date←{0=⎕NC'⍺':⊃¨3⎕NINFO ⍵ ⋄ (¯1(↑<↓)⍒(⊂⍺),⍨∇⍵)/⍵}_∘ls
 
 ⍝ file management
-   'Files'⎕CY'files'
-   ∇ r←{a}cd w
-     Files.SetCurrentDirectory¨⊆w
-     :If 0≠⎕NC'a'
-     :AndIf 0<≢a←⊆a
-         3 ⎕MKDIR⊃a ⋄ Files.SetCurrentDirectory⊃a ⋄ a←(1↓a)cd'.'
-     :EndIf
-     r←'\\'⎕R'/'⊢Files.GetCurrentDirectory
-   ∇
-   at←{⍺←⊢ ⋄ d←cd'.' ⋄ 0::{⎕SIGNAL⍵⊣cd d}⎕EN ⋄ _←cd⍵⍵ ⋄ r←⍺ ⍺⍺ ⍵ ⋄ _←cd d ⋄ r}
-   cp←{⍺←'.' ⋄ _←⊃+/⊃(⊆⍺)(⎕NCOPY⍠'IfExists' 'Replace')¨⊃,/(⎕NINFO⍠1)¨⊆⍵}
-   mv←{0=⎕NC'⍺':TMP∇⍵ ⋄ _←⊃+/3⎕NDELETE⍠1¨⊆⍵⊣⍺cp⍵}
-   ls←{
-       0≠⎕NC'⍺':⊃,¨/⍺ ∇{⍺⍺ at ⍺⊢⍵}¨⍥⊆⍵
-       2({'/',⍨¨@((1=⍵)⍨)⍺}/⍤↑,↓)⊃,¨/(0 1 2 3 5∘(⎕NINFO⍠1){0::⍵ ⋄ 1=⊃1 ⎕NINFO ⍵:'*',⍨'/',⍨⍣('/'≠⊃⌽⍵)⊢⍵ ⋄ ⍵})¨⊆⍵
-   }
-  TMP←{0<≢⍵:⍵ ⋄ 11::'' ⋄ '\\'⎕R'/'⊃⎕NINFO 2⎕NQ#'GetEnvironment'⍺}/'TMP' 'TEMP' 'TMPDIR' ''
+   _b←⎕NINFO{l b⊣b←(≢⊃⍵⍵ ⍵)↓¨⊃,/⊃¨⍺⍺⍠'Recurse'(2 ¯1)⍠1⊢(⊂'/*'),⍨¨@(1=1 ⍺⍺¨⊢)l←⊃⍺⍺⍠1⊢(-'/'=⊃∘⌽)⍛↓⍵}⎕NPARTS
+   _t←⎕NINFO{⎕NULL≡⍺:'' ⋄ 1=1 ⍺⍺ ⍺:(⊃,/)¨1 ⍵⍵(⊂⍺,'/'),¨⍵ ⋄ ⍺}⎕NPARTS
+   cp←((⊃,/)_t{⍺←'.' ⋄ ⍺ ⍺⍺ b⊣⍺ ⎕NCOPY⍠'IfExists' 'Replace'⊃_ b←⍵⍵ ⍵}_b¨⍥⊆)__
+  _mv←{0∊⍴⍵:'' ⋄ (0=⎕NC'⍺')∧BIN≡⍵:⎕NULL∇⍵,'/*' ⋄ ⍺←BIN
+       ⍺ ⍺⍺ b⊣⍺{⎕NULL≡⍺:3 ⎕NDELETE ⍵ ⋄ 19 22::3⎕NDELETE⍵⊣⍺cp⍵ ⋄ ⍺ ⎕NMOVE ⍵}⊃_ b←⍵⍵ ⍵}
+  _mk←{⍺←⊢ ⋄ 1<|≡⍵:⍺∘∇¨⍵ ⋄ 2|⎕DR⍵:⊢⍺⍺.t←⊃⌽⍺⍺.t+1e¯6×⎕IO+⍳⍵
+       0∊⍴⍵:(⍺⊣TMP)∇'&.tmp' ⋄ '/'≡⍵:(⍺⊣TMP)∇'temp-&/' ⋄ p←⍵⍵(⊆⍺),⊂{'&'∊⍵:∇(⍵⍳'&')(-∘1⍛↑,(120⌶4),↓)⍵ ⋄ ⍵}⍵
+       '/'=⊃⌽⍵:'/',⍨⍣('/'≠⊃⌽⍵)⍵⍵⊃⎕NINFO p⊣3⎕MKDIR p ⋄ ⊃ls p⊣⎕NUNTIE p⎕NCREATE 0}
+   mv←((⊃,/)_t _mv _b¨⍥⊆)__ ⋄ mk←(t:⎕TALLOC 1)_mk _p __
+
+⍝ directories
+ HOME←⊃1⎕NPARTS'/',⍨⊃{0<≢⍵:⍵ ⋄ 11::'' ⋄ ⊃⎕NINFO 2⎕NQ#'GetEnvironment'⍺}/'HOME' 'HOMEPATH' ''
+  TMP←_p(739⌶0),'/' ⋄ BIN←TMP mk'nu-bin/'
+
+⍝ processes
+ exec←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ S←⎕SHELL⍠'Output'(2'Array')
+       _←{(o e)_ r _ _←⍺⍺ ⍵⍵,⍥⊆⍵ ⋄ 0=r:o ⋄ (∊join⊆e)⎕SIGNAL 11}⍺⍺
+       (0∊⍴⍺⍺)∧0=⎕NC'⍺':⊃⊃⎕SHELL join⊆⍵ ⋄ 0∊⍴⍺⍺:⊃⊃⎕SHELL⍠'Input'(0('Array'(join cat⍵)'UTF-8'))join⊆⍺
+       0=⎕NC'⍺':S _⍵ ⋄ 2|⎕DR⍵:S⍠'Input'(0('Token'⍵))_⍺ ⋄ S⍠'Input'(0('Array'(join cat⍵)'UTF-8'))_⍺}
+ fork←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ f←mk 1 ⋄ 3=⎕NC'⍺⍺':f⊣(f tee ⍺ ⍺⍺⊢)&⍵
+       S←⎕SHELL⍠'Output'(1('Callback'('kill'f))) ⋄ _←{_←⍺⍺ ⍵⍵,⍥⊆⍵}⍺⍺ ⋄ __←{_←⍺⍺ join⊆⍵}
+       (0∊⍴⍺⍺)∧3=⎕NC'⍺':f⊣S __&⍵ ⋄ 0∊⍴⍺⍺:f⊣S⍠'Input'(0('Array'(join cat⍵)'UTF-8'))__&⍺
+       3=⎕NC'⍺':f⊣S _&⍵ ⋄ 2|⎕DR⍵:f⊣S⍠'Input'(0('Token'⍵))_&⍺ ⋄ f⊣S⍠'Input'(0('Array'(join cat⍵)'UTF-8'))_&⍺}
+   sh←⍬exec ⋄ bg←⍬fork
+ kill←{(~DEBUG)/0::⎕EM ⎕SIGNAL ⎕EN ⋄ 0≠⎕NC'⍺':⍺{⍵.Done:1⊣⎕TPUT ⍺ ⋄ 1⊣('Array'⍵.Output'UTF-8')⎕TPUT ⍺}⍵
+       '*'≡⍵:⎕TKILL ⎕TCNUMS ⎕TID⊣{0=≢⎕TPOOL:⍬ ⋄ _←⎕TGET⊃⌽⎕TPOOL ⋄ ∇⍵}⍬ ⋄ 2|⎕DR⍵:{⍵≡⌊⍵:⎕TKILL⍵ ⋄ ⍵⊣⎕TPUT ⍵}⍵
+       ⊂⍵.(('EN'EN)('EM'EM)('Message'(OSError{⍵,2⌽(×≢⊃⍬⍴2⌽⍺,⊂'')/'") ("',⊃⍬⍴2⌽⍺}Message)))}
+
+⍝ text files
+   _r←''∘{2|⎕DR g←⊃⎕TGET{(≢t)<i←⍵⍳⍨⍥|t←⎕TPOOL:∇⍵⊣⎕DL.25 ⋄ ⍵×i⌷×t}⍵:⍺ ⋄ ⍵<0:g ⋄ (⍺,⊃1↓g)∇⍵}
+   _r←_r{11 22::l⊣⎕SIGNAL(0=≢⊃l←ls⍵)/⎕EN ⋄ 1<≡⍵:⍵ ⋄ 2|⎕DR⍵:cut ⍺⍺ ⍵ ⋄ 1<≢⍴⍵:↓⍕⍵ ⋄ 1=⊃1⎕NINFO⍵:ls⍵ ⋄ ⊃⎕NGET⍵1}
+  cat←_r{⍺←⊢ ⋄ ⍺,⍥⍺⍺ ⍵}_
+  head←{⍺←10 ⋄ ↑(⍺⌊≢⍵)↑⍵}_∘cat ⋄ tail←{⍺←10 ⋄ ↑(-⍺⌊≢⍵)↑⍵}_∘cat
+ sort←{⍺←⍵ ⋄ (⊂⍋↑⍺)⌷⍵}_∘cat ⋄ rsort←⌽⍤sort
+ grep←{0=⎕NC'⍺':('/'=⊃∘⌽¨)⍛/⍵ ⋄ ↑(0<∘≢⍺⎕S 3)¨⍛/⍵}_∘cat ⋄ vgrep←{0=⎕NC'⍺':('/'≠⊃∘⌽¨)⍛/⍵ ⋄ ↑(0=∘≢⍺⎕S 3)¨⍛/⍵}_∘cat
+  tee←{0=⎕NC'⍺':⍵⊣⎕←↑⍵ ⋄ 2|⎕DR⍺:⍵⊣⎕TPUT⍺⊣('Array'(join⍵)'UTF-8')⎕TPUT⍺ ⋄ ⍵⊣(⊂⍵)⎕NPUT⍺1}__∘cat
+ teea←{0=⎕NC'⍺':⍵⊣⍞←↑⍵ ⋄ 2|⎕DR⍺:⍵⊣('Array'(join⍵)'UTF-8')⎕TPUT⍺ ⋄ ⍵⊣(⊂⍵)⎕NPUT⍺2}__∘cat
+   wc←{⍺←'\S+' ⋄ +/(≢⍺⎕S 3)¨⍵}_∘cat ⋄ wcl←{0=⎕NC'⍺':≢cat ⍵ ⋄ ≢⍺ grep ⍵}_
+  sed←{⍺←'-\s+$' ⋄ 0∊⍴⍺:cat⍵ ⋄ s r←↓⍉n 2⍴(1+2×n←⌈(≢p)÷2)↑(p←⊃⍛(≠⊆⊢)⊃⊆⍺),⊂'' ⋄ s ⎕R r⊢(1↓⊆⍺)∇⍵}_
+
+⍝ text editor
+   ed←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ 1<≡⍵:_←∇¨ls ⍵ ⋄ 3≠⎕NC'⍺⍺':⍵⊣⍺(⍺⍺ exec)∇∇⍵ ⋄ _←⍵⊣⍵ tee ⍺ ⍺⍺ cat ⍵}
 
 ⍝ text editing
-  cat←{⍺←⊢ ⋄ ⍺,⍥{1<≡⍵:⍵ ⋄ 1=⊃1⎕NINFO⍵:⊃ls⍵ ⋄ ⊃⎕NGET⍵1}⍵}
-  tac←{0=⎕NC'⍺': ⌽cat⍵ ⋄ ⍵,⍥(⌽cat)⍺}
- head←{⍺←10 ⋄ ( ⍺⌊≢⍵)↑⍵}∘cat ⋄  grep←{0=⎕NC'⍺':∇∘man⊢⍵ ⋄ /⍨∘((0<∘≢⍺⎕S 3)¨)⍨cat⍵} ⋄  sort←{⍺←⍵ ⋄ (⊂⍋↑⍺)⌷⍵}∘cat
- tail←{⍺←10 ⋄ (-⍺⌊≢⍵)↑⍵}∘cat ⋄ vgrep←{⍺←'^\s*$'        ⋄ /⍨∘((0=∘≢⍺⎕S 3)¨)⍨cat⍵} ⋄ rsort←⌽⍤sort
-   ed←{⍺←⊢ ⋄ _←⍵ tee ⍺ ⍺⍺ cat ⍵}
-    x←{
-        ⍺←⊢ ⋄ R←{⍵⍵ ⎕R ⍺⍺⍠('Mode' 'D')('DotAll' 1)⊢⍵}⍵⍵
-        3=⎕NC'⍺⍺':⍺∘⍺⍺{⍺⍺ ⍵.Match}R ⍵ ⋄ 3≠⎕NC'⍺':⎕SIGNAL 6 ⋄ ⍺⍺ R ⍵
-    }
-    y←{⍺←⊢ ⋄ ⍺(⍺⍺x('(?<=(',⍵⍵,')|^)(.*?)(?=(',⍵⍵,')|$)'))⍵}
-    g←{⍺←⊢ ⋄ ⍺ ⍺⍺⍣(0<(≢⍵⍵⎕S⊢⍠('Mode' 'D')('DotAll'1))⊢⍵)⊢⍵}
-    v←{⍺←⊢ ⋄ ⍺ ⍺⍺⍣(0=(≢⍵⍵⎕S⊢⍠('Mode' 'D')('DotAll'1))⊢⍵)⊢⍵}
-  cut←{(⍵∊⍨⎕UCS 10)∧(1=≡⍵)∧0=⎕NC'⍺':⊃¨(⎕UCS 10)∇,⊂⍵ ⋄ ⍺←' ' ⋄ ⍺{↓⍉↑⍺(≠⊆⊢)¨⊆⍵}∘cat⍵}
- join←{⍺←' '⊣⍣(2<≡⍵)⊢⎕UCS 10 ⋄ 2>≡⍵:⍵ ⋄ 2=≡⍵:⊃(⊣,⍺,⊢)/⍵ ⋄ ⊃(⊣,¨⍺,¨⊢)/⍵}∘cat
-  tee←{w←⍕(⍪∘↑¨⊂[⎕IO+1])⍣(0>≡⍵)↑⍵ ⋄ 0=⎕NC'⍺':_←⍵⊣⎕←w ⋄ _←⍵⊣(⊂↓w)⎕NPUT⍺1}
-   wc←{⍺←'\S+' ⋄ +/(≢⍺⎕S⊢)¨⍵}∘cat
- find←{
-        0≠⎕NC'⍺':⊃,/⍺ ∇{⍺⍺ at ⍺⊢⍵}¨⍥(⊆∘,∘⊆)⍵ ⋄ l←↓⍉↑ls⊃,/⊃¨⎕NINFO⍠1⍠'Recurse'(2 ¯1)⊆,⊆⍵
-        3≠⎕NC'⍺⍺':((0<⍺⍺∘wc∘⊂¨)⊢⍤/⊢)⍣(0<≢⍺⍺)⊃↓⍉↑l ⋄ n←⎕NS ⍬ ⋄ (⍺⍺{n.(name bytes modified owner)←⍵ ⋄ ⍺⍺ n}¨l)/⊃↓⍉↑l
-    }
+  TAB LF CR←⎕UCS 9 10 13 ⋄ CRLF←CR,LF ⋄ NL←CR,⍣('Windows'≡'-64'~⍨⊃#⎕WG'APLVersion')⊢LF
+  cut←{(0=⎕NC'⍺')∧1<|≡⍵:⍵ ⋄ 0=⎕NC'⍺':¯1(↑,⍨⊣↓¨↓)LF((1,=)⊂⊢)⍵~CR ⋄ 0∊⍴⍺:(' ',TAB LF CR)∇⍵ ⋄ ⍺(~⍤∊⍨⊆⊢)⍵}_
+ join←{(0=⎕NC'⍺')∧2=|≡⍵:NL∇⍵ ⋄ ⍺←'' ⋄ ⊃(⊣,⍺,⊢)/⍵}_
+    x←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ R←{⍵⍵ ⎕R ⍺⍺⍠'Mode' 'D'⍠'DotAll' 1⊢⍵}⍵⍵
+       3=⎕NC'⍵⍵':⍺ ⍺⍺⎕S{⍵.Match}⍵ ⋄ 3=⎕NC'⍺⍺':⍺∘⍺⍺{⍺⍺ ⍵.Match}R ⍵ ⋄ 3≠⎕NC'⍺':⎕SIGNAL 6 ⋄ ⍺⍺ R ⍵}
+    y←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ ⍺ ⍺⍺x'^.*$'x('(^|',⍵⍵,')\K(.*?)(?=(',⍵⍵,'|$))')⊢⍵}
+    g←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ 3=⎕NC'⍵⍵':(0<∘≢⍺⍺⎕S⊢)¨⍛⍵⍵⊆⍵
+       3≠⎕NC'⍺⍺':⍺(⍺⍺ x ⍵⍵)∇∇⍵⍵⊢⍵ ⋄ ⍺ ⍺⍺⍣(0<≢⍵⍵⎕S⊢⍠'Mode' 'D'⍠'DotAll'1⊢⍵)⊢⍵}
+    v←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ 3=⎕NC'⍵⍵':(0=∘≢⍺⍺⎕S⊢)¨⍛⍵⍵⊆⍵
+       3≠⎕NC'⍺⍺':⍺(⍺⍺ x ⍵⍵)∇∇⍵⍵⊢⍵ ⋄ ⍺ ⍺⍺⍣(0=≢⍵⍵⎕S⊢⍠'Mode' 'D'⍠'DotAll'1⊢⍵)⊢⍵}
 
 ⍝ manual
-    man ←⊂'NOT UNIX'
-    man,←⊂''
-    man,←⊂'File management'
-    man,←⊂''
-    man,←⊂'           d1 ls f1 f2 ...    list f1 f2 ... from dir d1, default .'
-    man,←⊂'    f3 f4 ... mv f1 f2 ...    move f1 f2 ... to f3 f4 ... (scalar extension), default TMP (temp dir)'
-    man,←⊂'    f3 f4 ... cp f1 f2 ...    copy f1 f2 ... to f3 f4 ... (scalar extension), default .'
-    man,←⊂'              cd d1 d2 ...    change to directory d1/d2/... and return working directory'
-    man,←⊂'    d3 d4 ... cd d1 d2 ...    change to directory d1/d2/.../d3/d4/..., creating d3/d4/... if needed'
-    man,←⊂'          ...(⍺⍺ at d1)...    run ⍺⍺ with given args in d1 and return to current dir, default ⊢'
-    man,←⊂''
-    man,←⊂'    with f1 f2 f3 f4 ... file (or dir) names, d1 d2 d3 d4 ... dir names, and n number'
-    man,←⊂''
-    man,←⊂'Text editing'
-    man,←⊂''
-    man,←⊂'           t2 cat t1    concatenate contents of t1 and t2, default ⍬'
-    man,←⊂'           t2 tac t1    concatenate reverse contents of t2 and t1, default ⍬'
-    man,←⊂'           n head t1    get first n lines of t1, default 10'
-    man,←⊂'           n tail t1    get last n lines of t1, default 10'
-    man,←⊂'          r  grep t1    get lines of t1 that match s, default grep this manual'
-    man,←⊂'          r vgrep t1    get lines of t1 that do not match s, default empty lines'
-    man,←⊂'          ⍺  sort t1    ascending sort lines of t1 according to ⍺, default t1'
-    man,←⊂'          ⍺ rsort t1    descending sort lines of t1 according to ⍺, default t1'
-    man,←⊂'           ⍺(⍺⍺ ed)f    run ⍺ ⍺⍺ cat f and save to f, default ⊢'
-    man,←⊂'         ⍺(⍺⍺ x ⍵⍵)s    substitute by ⍺⍺ or run ⍺∘⍺⍺ on matches of ⍵⍵ in s, default ⊢'
-    man,←⊂'         ⍺(⍺⍺ y ⍵⍵)s    substitute by ⍺⍺ or run ⍺∘⍺⍺ between matches of ⍵⍵ in s, default ⊢'
-    man,←⊂'         ⍺(⍺⍺ g ⍵⍵)s    run ⍺∘⍺⍺ s if s matches ⍵⍵, default ⊢'
-    man,←⊂'         ⍺(⍺⍺ v ⍵⍵)s    run ⍺∘⍺⍺ s if s does not match ⍵⍵, default ⊢'
-    man,←⊂'            c cut t1    cut t1 in fields with separator c, default space or new line'
-    man,←⊂'    c join t1 t2 ...    join lines of t1 t2 ... with c, default space or new line'
-    man,←⊂'            f tee t1    save t1 to file f and return it, default stdout'
-    man,←⊂'             r wc t1    count occurences of r in t1, default words'
-    man,←⊂'         d(⍺⍺ find)f    find file f with condition ⍺⍺ true, or matching ⍺⍺ at d, default .'
-    man,←⊂'                        (⍺⍺ gets a namespace argument with fields: name bytes modified owner)'
-    man,←⊂''
-    man,←⊂'    with t1 t2 ... text (string with dir or file name, or list of lines), n number,'
-    man,←⊂'    r regex (as a string), s string, c character, f file name and d dir name'
-    man,←⊂''
-    man,←⊂'TODO: sed, awk, mkfifo, error checking (!), tests (!!), ...'
-    man,←⊂'SEE ALSO: unix, gnu, plan 9'
+  man ←⊂'NOT UNIX'
+  man,←⊂''
+  man,←⊂'Files and processes'
+  man,←⊂''
+  man,←⊂'         ... cd d1 ...   change to d1/..., return ⍺ pushing current dir, empty by default'
+  man,←⊂''
+  man,←⊂'      d1 ... ls f1 ...   list f1 ... from d1/..., default .'
+  man,←⊂'    d1 ... find f1 ...   list f1 ... from d1/... recursively, default .'
+  man,←⊂'     n ... date f1 ...   modification date of f1 ... or list elements in f1 ... newer than n ...'
+  man,←⊂'           n du f1 ...   size of f1 ... or list elements in f1 ... larger than n'
+  man,←⊂'           n lc f1 ...   format list f1 ... by columns in max n rows, default 10'
+  man,←⊂'           n ll f1 ...   format full list f1 ... as list of max n rows sorted by size, default 16'
+  man,←⊂''
+  man,←⊂'      f2 ... mv f1 ...   move f1 ... to f2 ... (scalar extension), default BIN, mv BIN to empty'
+  man,←⊂'      f2 ... cp f1 ...   copy f1 ... to f2 ... (scalar extension), default .'
+  man,←⊂'      d1 ... mk fn ...   make fn pipes or create fn ... in d1/..., default . (empty for temp)'
+  man,←⊂''
+  man,←⊂'            ... sh ...   run shell command ⍵ or shell command ⍺ with stdin ⍵, empty for repl'
+  man,←⊂'            ... bg ...   run shell command in a different thread and return stdout pipe'
+  man,←⊂'       ...(⍺⍺ exec)...   exec command ⍺⍺ with arguments ⍵ or with arguments ⍺ and input ⍵'
+  man,←⊂'       ...(⍺⍺ fork)...   exec in a different thread and return stdout pipe'
+  man,←⊂'              kill ...   kill thread or close pipe, ''*'' to kill all threads'
+  man,←⊂''
+  man,←⊂'    with f1 ..., f2 ... file or dir paths (right arg f1 ... may include wildcards, empty is .),'
+  man,←⊂'    d1 ... dir names (path components), n ... numbers, and fn file or dir name or integer'
+  man,←⊂''
+  man,←⊂'    HOME is the home directory. TMP is the system temp dir. BIN is nu''s recycle bin dir'
+  man,←⊂''
+  man,←⊂'Text editing'
+  man,←⊂''
+  man,←⊂'             t2 cat t1   concatenate contents of t1 and t2, default ⍬'
+  man,←⊂'             n head t1   format first n lines of t1 as matrix, default 10'
+  man,←⊂'             n tail t1   format last n lines of t1 as matrix, default 10'
+  man,←⊂'            ⍺  sort t1   ascending sort lines of t1 according to ⍺, default t1'
+  man,←⊂'            ⍺ rsort t1   (sort -r) descending sort lines of t1 according to ⍺, default t1'
+  man,←⊂'            r  grep t1   get lines of t1 matching s, default $/ (dirs)'
+  man,←⊂'            r vgrep t1   (grep -v) get lines of t1 not matching s, default $/ (files)'
+  man,←⊂'             f  tee t1   write t1 to f and return it, pipes are closed, default ⎕'
+  man,←⊂'             f teea t1   (tee -a) append t1 to f and return it, pipes are not closed, default ⍞'
+  man,←⊂'               r wc t1   count occurences of r in t1, default \S+ (words)'
+  man,←⊂'              r wcl t1   (wc -l) count lines with occurences of r in t1, default .* (all lines)'
+  man,←⊂'          s ... sed t1   apply substitution pattern /a/b/... (or |a|b|.., etc), default -\s+$'
+  man,←⊂'          ...(⍺⍺ ed)f1   apply ⍺∘⍺⍺ on f and write back to f, ⍺⍺ string to run with exec, default ⊢'
+  man,←⊂''
+  man,←⊂'      ⍺(⍺⍺ x ⍵⍵)s1 ...   substitute by ⍺⍺ or apply ⍺∘⍺⍺ on matches of ⍵⍵ in s, default ⊢'
+  man,←⊂'      ⍺(⍺⍺ y ⍵⍵)s1 ...   substitute by ⍺⍺ or apply ⍺∘⍺⍺ between matches of ⍵⍵ in s, default ⊢'
+  man,←⊂'                         (right function to x or y to apply ⍺ to matches or non-matches of ⍺⍺)'
+  man,←⊂'      ⍺(⍺⍺ g ⍵⍵)s1 ...   apply ⍺∘⍺⍺ s if s matches ⍵⍵, default ⊢'
+  man,←⊂'      ⍺(⍺⍺ v ⍵⍵)s1 ...   apply ⍺∘⍺⍺ s if s does not match ⍵⍵, default ⊢'
+  man,←⊂'                         (right function to g or v to apply ⍺ to lines matching or not ⍺⍺)'
+  man,←⊂'         s2 cut s1 ...   split ⍵ at occurences of ⍺, empty for whitespace, default linebreak'
+  man,←⊂'        s2 join s1 ...   join elements of ⍵ with ⍺, default NL or empty'
+  man,←⊂''
+  man,←⊂'    with t1 t2 path or glob string, or matrix, or list of lines, or pipe (negated to not close),'
+  man,←⊂'    n number, r regex string, s s1 s2 ... strings, f1 file name'
+  man,←⊂''
+  man,←⊂'    The variables TAB CR LF contain tab, carriage return and linefeed characters.'
+  man,←⊂'    CRLF is the windows new line, and NL the native one (LF or CRLF)'
+  man,←⊂''
+  man,←⊂'SEE ALSO: unix, gnu, plan 9'
+  man←↑man
+
+⎕EX('_'=⊃¨)⍛/⎕NL-⍳9
+⎕DF'[~unix]'
 
 :EndNamespace
