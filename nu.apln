@@ -55,7 +55,7 @@ __←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ _←⍺ ⍺⍺ ⍵}
   cat←_r{⍺←⊢ ⋄ ⍺,⍥⍺⍺ ⍵}_
   head←{⍺←10 ⋄ ↑(⍺⌊≢⍵)↑⍵}_∘cat ⋄ tail←{⍺←10 ⋄ ↑(-⍺⌊≢⍵)↑⍵}_∘cat
  sort←{⍺←⍵ ⋄ (⊂⍋↑⍺)⌷⍵}_∘cat ⋄ rsort←⌽⍤sort
- grep←{0=⎕NC'⍺':('/'=⊃∘⌽¨)⍛/⍵ ⋄ ↑(0<∘≢⍺⎕S 3)¨⍛/⍵}_∘cat ⋄ vgrep←{0=⎕NC'⍺':('/'≠⊃∘⌽¨)⍛/⍵ ⋄ ↑(0=∘≢⍺⎕S 3)¨⍛/⍵}_∘cat
+ grep←{0=⎕NC'⍺':('/'=⊃∘⌽¨)⍛/⍵ ⋄ (0<∘≢⍺⎕S 3)¨⍛/⍵}_∘cat ⋄ vgrep←{0=⎕NC'⍺':('/'≠⊃∘⌽¨)⍛/⍵ ⋄ (0=∘≢⍺⎕S 3)¨⍛/⍵}_∘cat
   tee←{0=⎕NC'⍺':⍵⊣⎕←↑⍵ ⋄ 2|⎕DR⍺:⍵⊣⎕TPUT⍺⊣('Array'(join⍵)'UTF-8')⎕TPUT⍺ ⋄ ⍵⊣(⊂⍵)⎕NPUT⍺1}__∘cat
  teea←{0=⎕NC'⍺':⍵⊣⍞←↑⍵ ⋄ 2|⎕DR⍺:⍵⊣('Array'(join⍵)'UTF-8')⎕TPUT⍺ ⋄ ⍵⊣(⊂⍵)⎕NPUT⍺2}__∘cat
    wc←{⍺←'\S+' ⋄ +/(≢⍺⎕S 3)¨⍵}_∘cat ⋄ wcl←{0=⎕NC'⍺':≢cat ⍵ ⋄ ≢⍺ grep ⍵}_
@@ -75,6 +75,9 @@ __←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ _←⍺ ⍺⍺ ⍵}
        3≠⎕NC'⍺⍺':⍺(⍺⍺ x ⍵⍵)∇∇⍵⍵⊢⍵ ⋄ ⍺ ⍺⍺⍣(0<≢⍵⍵⎕S⊢⍠'Mode' 'D'⍠'DotAll'1⊢⍵)⊢⍵}
     v←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ 3=⎕NC'⍵⍵':(0=∘≢⍺⍺⎕S⊢)¨⍛⍵⍵⊆⍵
        3≠⎕NC'⍺⍺':⍺(⍺⍺ x ⍵⍵)∇∇⍵⍵⊢⍵ ⋄ ⍺ ⍺⍺⍣(0=≢⍵⍵⎕S⊢⍠'Mode' 'D'⍠'DotAll'1⊢⍵)⊢⍵}
+
+⍝ aliases
+    h←head ⋄ r←find ⋄ d←grep ⋄ f←vgrep ⋄ s←sort
 
 ⍝ manual
   man ←⊂'NOT UNIX'
