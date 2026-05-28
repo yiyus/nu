@@ -42,7 +42,8 @@
   sort'a.txt' ⋄ du⍛sort'*/'                     ⍝ sort lines A-z, sort dirs by ascending size
   rsort'a.txt' ⋄ du⍛rsort'*/'                   ⍝ sort lines z-A, sort dirs by descending size
   '^re$'grep'a.txt' ⋄ '^re$'vgrep'a.txt'        ⍝ lines matching or not matching regexp
-  grep'' ⋄ vgrep'' ⋄ grep HOME ⋄ vgrep HOME     ⍝ list of dirs, list of files in current and HOME dir
+  '(?i)apl'grep'*' ⋄ '(^|/)\.'vgrep'*'          ⍝ find files with case insensitive regexp, non-hidden files
+  grep'' ⋄ vgrep'' ⋄ grep HOME ⋄ vgrep HOME     ⍝ list of files, list of dirs, in current and HOME dir
   wc'a.txt' ⋄ '[A-Z]+'wc'a.txt'                 ⍝ count words, count uppercase runs
   wcl'a.txt' ⋄ '^TODO'wcl'a.txt' ⋄ wcl TMP      ⍝ count lines, lines starting with TODO, files in TMP
   'out.txt'tee text                             ⍝ write text to out.txt (and return it as shy result)
@@ -64,6 +65,7 @@
   1⎕C v'skip'g'error'⊢line                      ⍝ uppercase lines with error unless they contain skip
   ('#'x'^')g'^TODO'¨text                        ⍝ prefix every TODO line with #
   re x⊢text ⋄ re g/text                         ⍝ matches of re in text, lines matching re
+  re g⊣text ⋄ re g(/∘⍳∘≢)text ⋄ re g rsort text ⍝ boolean of matches, matched line numbers, matches first
   '/old/new'sed'a.txt' ⋄ '|old|new|'sed'a.txt'  ⍝ replace old with new (different separators, same result)
   sed'a.txt' ⋄ ⊃sed⊂line                        ⍝ trim right whitespace of file or line
   '|foo|bar|baz|qux'sed'a.txt'                  ⍝ substitute foo with bar and baz with qux
@@ -91,8 +93,8 @@
 ⍝ FULL EXAMPLES
   ↑'^⍝'grep'eg.apl'                             ⍝ sections in this document
   ⍪↑¨'cp'∘grep¨man(cat'eg.apl')                 ⍝ search help and examples
-  r←find ⋄ d←grep ⋄ f←vgrep ⋄ s←sort            ⍝ flag-like aliases: recursive, dirs, files, sorted
-  'dir'cp r d'a*' ⋄ 're'grep¨f'a*'              ⍝ use flag-like aliases
+  r←find ⋄ f←grep ⋄ d←vgrep ⋄ s←sort            ⍝ flag-like aliases: recursive, dirs, files, sorted
+  'dir'cp d'a*' ⋄ 're'grep¨f'a*' ⋄ cat f r''    ⍝ use flag-like aliases
   2026 5 date(5×2*20)du find'/var/log'          ⍝ files >5MB modified after May 2026
   ⊃du⍛rsort vgrep find''                        ⍝ largest file in subtree
   +/du∘find'*.md'                               ⍝ total size of all md files
@@ -105,5 +107,5 @@
   ⍕,∘≢⌸'[A-z]+'x⊢⎕C cat'doc.md'                 ⍝ word-frequency table for a document
   ⍕,∘≢⌸git'log' '--pretty=format:%an'           ⍝ git commits by author (uses git←↑'git'exec)
   ↑'#'∘={' '@⍺⍺(1+⍺⍺)⍛/⍵}¨'^#+'g/cat'file.md'   ⍝ table of contents of markdown file
-  ↑{⍵(↑'TODO|FIXME|XXX'grep ⍵)}¨ls'*.apl*'      ⍝ todo list
+  ↑{⍵(↑'TODO|FIXME|XXX'grep ⍵)}¨ls'*.apl*'      ⍝ todo list (grep -n)
   tpl←{⍺ tee sed↑{join⍎1↓⍵}x'^<.*$'¨cat ⍵}      ⍝ (UNSAFE!) templates: 'README.md'tpl'README.tpl'
