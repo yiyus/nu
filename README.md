@@ -13,17 +13,17 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
 
 ```apl
     ⍝ HELP: man
-      man                                           ⍝ show the manual
-      'cd'grep man                                  ⍝ search the manual
+      man                                           ⍝ show manual
+      'cd'grep man                                  ⍝ search in manual
 
     ⍝ NAVIGATION: cd HOME TMP BIN
-      cd'.' ⋄ cd'' ⋄ cd⍬                            ⍝ current directory (pwd)
+      cd'' ⋄ cd⍬ ⋄ ⊢cd'.'                           ⍝ current directory (pwd)
       cd'dir' ⋄ cd'..' ⋄ cd'/'                      ⍝ change to dir, parent and root directory
       cd HOME ⋄ cd TMP ⋄ cd BIN                     ⍝ change to $HOME, $TMP, and nu's recycle bin
       cd HOME'Documents'                            ⍝ change to $HOME/Documents
       cd'a1' 'b2' 'c3'                              ⍝ change to a1/b2/c3
       d←cd'..' ⋄ cd d                               ⍝ change to parent dir and come back
-      d←cd HOME ⋄ d cd←'..' ⋄ d cd←d ⋄ cd d         ⍝ move around and come back (pushd/popd)
+      d←cd HOME ⋄ d←d cd '..' ⋄ d←d cd'' ⋄ d cd''   ⍝ move around and come back (pushd/popd)
 
     ⍝ FILE INFO: ls lc ll find du date
       ls'' ⋄ ls'*.md' ⋄ ls'*/' ⋄ 'dir'ls''          ⍝ list files, markdown files, dirs, files in dir
@@ -187,3 +187,10 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
         CRLF is the windows new line, and NL the native one (LF or CRLF)
 
     SEE ALSO: unix, gnu, plan 9
+
+## Setup
+
+```apl
+      ]get https://raw.githubusercontent.com/yiyus/nu/refs/heads/main/nu.apln
+      ⎕PATH{⊃(⊣,' ',⊢)/∪(⊂⍵),⍨' '(≠⊆⊢)⍺}←'nu'
+```

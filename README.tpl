@@ -18,3 +18,10 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
 ## Manual
 
 <↓(⊢,⍨''⍴⍨4,⍨⊃∘⍴)man
+
+## Setup
+
+```apl
+      ]get https://raw.githubusercontent.com/yiyus/nu/refs/heads/main/nu.apln
+      ⎕PATH{⊃(⊣,' ',⊢)/∪(⊂⍵),⍨' '(≠⊆⊢)⍺}←'nu'
+```

@@ -1,15 +1,15 @@
 ⍝ HELP: man
-  man                                           ⍝ show the manual
-  'cd'grep man                                  ⍝ search the manual
+  man                                           ⍝ show manual
+  'cd'grep man                                  ⍝ search in manual
 
 ⍝ NAVIGATION: cd HOME TMP BIN
-  cd'.' ⋄ cd'' ⋄ cd⍬                            ⍝ current directory (pwd)
+  cd'' ⋄ cd⍬ ⋄ ⊢cd'.'                           ⍝ current directory (pwd)
   cd'dir' ⋄ cd'..' ⋄ cd'/'                      ⍝ change to dir, parent and root directory
   cd HOME ⋄ cd TMP ⋄ cd BIN                     ⍝ change to $HOME, $TMP, and nu's recycle bin
   cd HOME'Documents'                            ⍝ change to $HOME/Documents
   cd'a1' 'b2' 'c3'                              ⍝ change to a1/b2/c3
   d←cd'..' ⋄ cd d                               ⍝ change to parent dir and come back
-  d←cd HOME ⋄ d cd←'..' ⋄ d cd←d ⋄ cd d         ⍝ move around and come back (pushd/popd)
+  d←cd HOME ⋄ d←d cd '..' ⋄ d←d cd'' ⋄ d cd''   ⍝ move around and come back (pushd/popd)
 
 ⍝ FILE INFO: ls lc ll find du date
   ls'' ⋄ ls'*.md' ⋄ ls'*/' ⋄ 'dir'ls''          ⍝ list files, markdown files, dirs, files in dir
