@@ -190,7 +190,14 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
 
 ## Setup
 
+Quick ephimeral setup:
+
 ```apl
       ]get https://raw.githubusercontent.com/yiyus/nu/refs/heads/main/nu.apln
-      ⎕PATH{⊃(⊣,' ',⊢)/∪(⊂⍵),⍨' '(≠⊆⊢)⍺}←'nu'
+```
+
+Installation with [Tatin](tatin.dev) (includes user command):
+
+```apl
+      ]TATIN.InstallPackages [tatin-test]yiyus-nu [MyUCMDs]
 ```
