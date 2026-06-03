@@ -200,4 +200,5 @@ Installation with [Tatin](tatin.dev) (includes user command):
 
 ```apl
       ]TATIN.InstallPackages [tatin-test]yiyus-nu [MyUCMDs]
+      ]UReset
 ```
