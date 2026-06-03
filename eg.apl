@@ -79,7 +79,7 @@
   'ps'exec'' ⋄ 'ps'exec'-a' '-u' '-x'           ⍝ exec command, exec command with arguments
   'a-z' 'A-Z'('tr'exec)'file.txt'               ⍝ exec with arguments, file as stdin
   'a-z' 'A-Z'('tr'exec)'echo'exec'hello'        ⍝ pipe exec into exec (no shell involved)
-  git←↑'git'exec ⋄ git'status' ⋄ git'log'       ⍝ defined and use git command
+  git←↑'git'exec ⋄ git'status' ⋄ git'log'       ⍝ define and use git command
 
 ⍝ BACKGROUND PROCESSES: bg fork kill
   p←mk 1 ⋄ p tee& text ⋄ tee p                  ⍝ create pipe, write to it from another thread, and read it
@@ -93,7 +93,7 @@
 ⍝ FULL EXAMPLES
   ↑'^⍝'grep'eg.apl'                             ⍝ sections in this document
   ⍪↑¨'cp'∘grep¨man(cat'eg.apl')                 ⍝ search help and examples
-  r←find ⋄ f←grep ⋄ d←vgrep ⋄ s←sort            ⍝ flag-like aliases: recursive, dirs, files, sorted
+  r←find ⋄ f←grep ⋄ d←vgrep ⋄ s←sort            ⍝ flag-like aliases: recursive, files, dirs, sorted
   'dir'cp d'a*' ⋄ 're'grep¨f'a*' ⋄ cat f r''    ⍝ use flag-like aliases
   2026 5 date(5×2*20)du find'/var/log'          ⍝ files >5MB modified after May 2026
   ⊃du⍛rsort vgrep find''                        ⍝ largest file in subtree
