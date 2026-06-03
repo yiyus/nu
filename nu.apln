@@ -119,6 +119,9 @@ grepn←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0=⎕NC'⍺':(ls⍵),(du⍵),↑da
 ⍝ aliases
    _aliases←'head' 'grep' 'vgrep' 'grepn' 'sort' 'cat' 'tee' 'teea' '''git''exec'
    ('hfdnscta',⊂'git'){⍎⍺,'←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ ⍺(',⍵,')⍵}'}¨_aliases
+   ∇ r←{a}git w
+     :If 0=⎕NC'a' ⋄ a←⊢ ⋄ :EndIf ⋄ r←↑a('git'exec)w
+   ∇
 
 ⍝ manual
   _man ←⊂'NOT UNIX'
