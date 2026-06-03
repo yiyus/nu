@@ -7,13 +7,13 @@ DEBUG←0
        ⍺←'' ⋄ d←'/'@('\'∘=)⎕SE.UCMD⍕'file.cd'(⊃(⊣,'/',⊢)/⊆⍵) ⋄ d←'/',⍨⍣('/'≠⊃⌽d)⊢d ⋄ ~0∊⍴⍵:_←(⊆⍺),∘⊂⍣(~0∊⍴⍺)⊢d ⋄ d}
 
 clean←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0≠⎕NC'⍺':∇⍺,'/',⍵ ⋄ ('/'∘≠∨1,¯1∘↓≠1∘↓)⍛/'/'@('\'∘=)⊃(⊣,'/',⊢)/⊆⍵}
-  lsd←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ 0∊⍴⍵:⍺∇'*' ⋄ 3≠⎕NC'⍺':∇((⊣,'/',⊢)/⊆⍺),¨'/',¨⊆⍵ ⋄ clean¨⊃,/{
+  lsd←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ 0∊⍴⍵:⍺∇'*' ⋄ 3≠⎕NC'⍺':∇clean¨((⊣,'/',⊢)/⊆⍺),¨'/',¨⊆⍵ ⋄ clean¨⊃,/{
            0∊⍴⍵:⊂⍵ ⋄ (⎕IO+≢⍵)=a←'*'⍳⍨,⍵:⎕NINFO⍵ ⋄ (⎕IO+≢⍵)=s←a+'/'⍳⍨,a↓⍵:((d=1)/¨'/'),⍨¨n⊣n d←0 1⎕NINFO⍠(⊃∨/'?*'∊,⍵)⊢⍵
            d←⊃(1∘=)⍛//1 0 ⎕NINFO⍠1⊢(s-s>1)↑⍵ ⋄ ⊃,/∇¨d,¨⊂(s-s>1)↓⍵}¨⊆⍵}
-   ls←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0≠⎕NC'⍺':∇((⊣,'/',⊢)/⊆⍺),¨'/',¨⊆⍵
+   ls←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0≠⎕NC'⍺':∇clean¨((⊣,'/',⊢)/⊆⍺),¨'/',¨⊆⍵
            ⊃,/{11 22::lsd⍵ ⋄ 1=1⎕NINFO⍵:lsd clean ⍵,'/*' ⋄ ⊂⍵}¨⊆⍵}
     r←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ ⊃,/{22::⊂⍵ ⋄ 0∊⍴⍵:⊂⍵ ⋄ 1=1 ⎕NINFO ⍵:⊃,/∇¨lsd ⍵,'/*' ⋄ ⊂⍵}¨⍺ lsd ⍵}
- find←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ 0∊⍴⍵:⍺∇'*' ⋄ 3≠⎕NC'⍺':∇((⊣,'/',⊢)/⊆⍺),¨'/',¨⊆⍵
+ find←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ 0∊⍴⍵:⍺∇'*' ⋄ 3≠⎕NC'⍺':∇clean¨((⊣,'/',⊢)/⊆⍺),¨'/',¨⊆⍵
        clean¨'/',⍨¨@({11 22::0 ⋄ 1=1⎕NINFO⍵}¨)(⊃,/)¨1⎕NPARTS⊃,/⊃¨⎕NINFO⍠'Recurse'(2 ¯1)⍠1⊃,/{
            (⎕IO+≢⍵)=a←⍵⍳'*':⍵ ⋄ (≢⍵)=s←1-⍨a+(a↓⍵)⍳'/':⊃⎕NINFO⍠1⍠'Recurse'(2 ¯1)⊢⍵ ⋄ ((⊃1∘=⍛//)1 0⎕NINFO⍠1⊢s↑⍵),¨⊂s↓⍵}∘,¨⊆⍵}
    lc←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←10 ⋄ ⍕⍉c r⍴(c×r←⍺⌊⌈(≢l)÷c←4⌈⌈(≢l)÷⍺)↑l←ls ⍵}
@@ -117,11 +117,9 @@ grepn←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0=⎕NC'⍺':(ls⍵),(du⍵),↑da
   ∇
 
 ⍝ aliases
-   _aliases←'head' 'grep' 'vgrep' 'grepn' 'sort' 'cat' 'tee' 'teea' '''git''exec'
-   ('hfdnscta',⊂'git'){⍎⍺,'←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ ⍺(',⍵,')⍵}'}¨_aliases
-   ∇ r←{a}git w
-     :If 0=⎕NC'a' ⋄ a←⊢ ⋄ :EndIf ⋄ r←↑a('git'exec)w
-   ∇
+   _aliases←⍪('hfdnscta',⊂'git')
+   _aliases,←⍪'head' 'grep' 'vgrep' 'grepn' 'sort' 'cat' 'tee' 'teea' '↑''git''exec'
+   {_←⍎⍺,'←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ ⍺←⊢ ⋄ ⍺(',⍵,')⍵}' ⋄ a←⍺}/_aliases
 
 ⍝ manual
   _man ←⊂'NOT UNIX'
