@@ -28,11 +28,13 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
     ⍝ FILE INFO: ls lc ll find du date
       ls'' ⋄ ls'*.md' ⋄ ls'*/' ⋄ 'dir'ls''          ⍝ list files, markdown files, dirs, files in dir
       ls'a.txt' 'b.txt' ⋄ 'dir1' 'dir2'ls¨⊂'*.md'   ⍝ list several files, several dirs
+      ls'dir' ⋄ lsd'dir'                            ⍝ list contents of directory, or list directory
       lc'' ⋄ ll'' ⋄ 5 lc'*.md' ⋄ 5 ll'*/'           ⍝ columns or full listing, with optional row count
       find'*.apl?' ⋄ 'dir'find'*.txt' ⋄ find''      ⍝ recursive find apl files, txt files in dir, all files
       du'*.png' ⋄ date'*.png'                       ⍝ size and modification date
       1e6 du'*' ⋄ 1e8 du find''                     ⍝ files larger than 1MB or 100MB recursively
       2025 date'*.md' ⋄ (3↑⎕TS)date find''          ⍝ md files modified since 2025, all since today
+      (⍕ls,∘↑date)'' ⋄ (⍕ls,∘⍪du)''                 ⍝ list files with modification dates or sizes
 
     ⍝ FILE MANAGEMENT: cp mv mk
       'back.md'cp'important.md' ⋄ 'back/'cp'dir'    ⍝ copy file, copy directory (recursively)
@@ -58,6 +60,7 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
       '^re$'grep'a.txt' ⋄ '^re$'vgrep'a.txt'        ⍝ lines matching or not matching regexp
       '(?i)apl'grep'*' ⋄ '(^|/)\.'vgrep'*'          ⍝ find files with case insensitive regexp, non-hidden files
       grep'' ⋄ vgrep'' ⋄ grep HOME ⋄ vgrep HOME     ⍝ list of files, list of dirs, in current and HOME dir
+      'APL'grepn'*.*' ⋄ grepn HOME                  ⍝ find occurences of 'APL' in files, table with file info
       wc'a.txt' ⋄ '[A-Z]+'wc'a.txt'                 ⍝ count words, count uppercase runs
       wcl'a.txt' ⋄ '^TODO'wcl'a.txt' ⋄ wcl TMP      ⍝ count lines, lines starting with TODO, files in TMP
       'out.txt'tee text                             ⍝ write text to out.txt (and return it as shy result)
