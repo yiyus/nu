@@ -21,5 +21,5 @@
   tags: "tools,unix,text,files",
   tatin_version: "0.103.0",
   userCommandScript: "./nu.dyalog",
-  version: "0.0.2",
+  version: "0.0.3",
 }
