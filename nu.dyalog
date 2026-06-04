@@ -19,13 +19,17 @@
           :If 0<≢input ⋄ r←⎕SE.nu⍎input ⋄ →0 ⋄ :EndIf
           p←¯10↑']nu '
       ∆R: ⍞←p ⋄ input←⍞
-          :If p≢(≢p)↑input ⋄ ⍎input ⋄ →0 ⋄ :EndIf
-          input↓⍨←≢p ⋄ →(0=≢input)/0
           :Trap 0
-              :If('-'=⊃input)∧'?',⍛≡∪1↓input
-                  ⎕SE.UCMD'nu ',input
+              :If p≢(≢p)↑input
+                  input←((+/∧\)' '∘=)⍛↓input
+                  :If']'=⊃input ⋄ ⎕SE.UCMD 1↓input ⋄ :Else ⋄ ⎕SE.THIS⍎input ⋄ :EndIf
               :Else
-                  ⎕SE.nu.{85:: ⋄ ⎕←1(85⌶)⍵}input
+                  input↓⍨←≢p ⋄ →(0=≢input)/0
+                  :If('-'=⊃input)∧'?',⍛≡∪1↓input
+                      ⎕SE.UCMD'nu ',input
+                  :Else
+                      ⎕SE.nu.{85:: ⋄ ⎕←1(85⌶)⍵}input
+                  :EndIf
               :EndIf
           :Else
               ⎕←⎕DMX.(EM(OSError{⍵,2⌽(×≢⊃⍬⍴2⌽⍺,⊂'')/'") ("',⊃⍬⍴2⌽⍺}Message))
