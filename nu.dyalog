@@ -36,7 +36,8 @@
           :EndTrap
           →∆R
       :Case 'PATH'
-          r←⎕PATH{⊃(⊣,' ',⊢)/∪(⊂⍵),⍨' '(≠⊆⊢)⍺}←'⎕SE.nu'
+          ⎕PATH{⊃(⊣,' ',⊢)/∪(⊂⍵),⍨' '(≠⊆⊢)⍺}←'⎕SE.nu'
+          r←⎕PATH
       :EndSelect
     ∇ 
 
