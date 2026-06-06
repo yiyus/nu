@@ -24,7 +24,14 @@
     ∇ r←Run(cmd input);p
       :Select cmd
       :Case 'nu'
-          :If 0<≢input ⋄ r←Cmd input ⋄ →0 ⋄ :EndIf
+          :If 0<≢input
+              :If{0::0 ⋄ 1=⊃1⎕NINFO⍵}input
+                  r←⎕SE.nu.lc''⊣⎕←⎕SE.nu.cd''⊣⎕SE.nu.cd input
+              :Else
+                  r←⎕SE.nu⍎input
+              :EndIf
+              →0
+          :EndIf
           p←¯10↑']nu '
       ∆R: ⍞←p ⋄ input←⍞
           :Trap 0
@@ -35,8 +42,10 @@
                   input↓⍨←≢p ⋄ →(0=≢input)/0
                   :If('-'=⊃input)∧'?',⍛≡∪1↓input
                       ⎕SE.UCMD'nu ',input
+                  :ElseIf{0::0 ⋄ 1=⊃1⎕NINFO⍵}input
+                      ⎕←⎕SE.nu.lc''⊣⎕←⎕SE.nu.cd''⊣⎕SE.nu.cd input
                   :Else
-                      ⎕←Cmd input
+                      ⎕SE.nu.{85:: ⋄ #.{⎕←⍵}1(85⌶)⍵}input
                   :EndIf
               :EndIf
           :Else
