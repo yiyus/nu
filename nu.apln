@@ -73,7 +73,7 @@ _base←{1(⊃,/)⍤↓¨⎕NPARTS(-'/'=⊃∘⌽)⍛↓¨⍵}
 rsort←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ t←cat⍵ ⋄ ⍺←t ⋄ (⊂⍒↑⍺)⌷t}
  grep←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0=⎕NC'⍺':('/'≠⊃∘⌽¨)⍛/cat⍵ ⋄ (0≠∘≢⍺⎕S 3)¨⍛/cat⍵}
 vgrep←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0=⎕NC'⍺':('/'=⊃∘⌽¨)⍛/cat⍵ ⋄ (0=∘≢⍺⎕S 3)¨⍛/cat⍵}
-grepn←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0=⎕NC'⍺':(ls⍵),(du⍵),↑date⍵ ⋄ ↑(⊂⍺){⍵(⍪m)(↑(m←⍺ g(/∘⍳∘≢)l)⊂⍛⌷l←cat⍵)}¨grep ⍵}
+grepn←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0=⎕NC'⍺':(ls⍵),(du⍵),↑date⍵ ⋄ ↑(⊂⍺){⍵(⍪m)(↑(m←⍺ g(⍸⊣)l)⊂⍛⌷l←cat⍵)}¨grep ⍵}
   tee←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0=⎕NC'⍺':_←t⊣⎕←↑t←cat⍵
        2|⎕DR⍺:_←t⊣⎕TPUT⍺⊣('Array'(join t←cat⍵)'UTF-8')⎕TPUT⍺ ⋄ _←t⊣(⊂t←cat⍵)⎕NPUT⍺1}
  teea←{(~DEBUG)/0::⎕SIGNAL kill⎕DMX ⋄ 0=⎕NC'⍺':_←t⊣⍞←↑t←cat⍵

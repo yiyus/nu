@@ -68,7 +68,7 @@
   1⎕C v'skip'g'error'⊢line                      ⍝ uppercase lines with error unless they contain skip
   ('#'x'^')g'^TODO'¨text                        ⍝ prefix every TODO line with #
   re x⊢text ⋄ re g/text                         ⍝ matches of re in text, lines matching re
-  re g⊣text ⋄ re g(/∘⍳∘≢)text ⋄ re g rsort text ⍝ boolean of matches, matched line numbers, matches first
+  re g⊣text ⋄ re g(⍸⊣)text ⋄ re g rsort text    ⍝ boolean of matches, matched line numbers, matches first
   '/old/new'sed'a.txt' ⋄ '|old|new|'sed'a.txt'  ⍝ replace old with new (different separators, same result)
   sed'a.txt' ⋄ ⊃sed⊂line                        ⍝ trim right whitespace of file or line
   '|foo|bar|baz|qux'sed'a.txt'                  ⍝ substitute foo with bar and baz with qux
