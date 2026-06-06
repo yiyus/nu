@@ -82,7 +82,7 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
       1⎕C v'skip'g'error'⊢line                      ⍝ uppercase lines with error unless they contain skip
       ('#'x'^')g'^TODO'¨text                        ⍝ prefix every TODO line with #
       re x⊢text ⋄ re g/text                         ⍝ matches of re in text, lines matching re
-      re g⊣text ⋄ re g(/∘⍳∘≢)text ⋄ re g rsort text ⍝ boolean of matches, matched line numbers, matches first
+      re g⊣text ⋄ re g(⍸⊣)text ⋄ re g rsort text    ⍝ boolean of matches, matched line numbers, matches first
       '/old/new'sed'a.txt' ⋄ '|old|new|'sed'a.txt'  ⍝ replace old with new (different separators, same result)
       sed'a.txt' ⋄ ⊃sed⊂line                        ⍝ trim right whitespace of file or line
       '|foo|bar|baz|qux'sed'a.txt'                  ⍝ substitute foo with bar and baz with qux
@@ -137,7 +137,8 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
              ... cd d1 ...   change to d1/..., return ⍺ pushing current dir, empty by default
 
           d1 ... ls f1 ...   list f1 ... from d1/..., default .
-        d1 ... find f1 ...   list f1 ... from d1/... recursively, default . (full paths)
+         d1 ... lsd f1 ...   (ls -d) list f1 ... from d1/... not opening dirs, default .
+        d1 ... find f1 ...   list f1 ... from d1/... recursively, default . (absolute paths)
          n ... date f1 ...   modification date of f1 ... or list elements in f1 ... newer than n ...
                n du f1 ...   size of f1 ... or list elements in f1 ... larger than n
                n lc f1 ...   format list f1 ... by columns in max n rows, default 10
@@ -165,14 +166,15 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
                  n tail t1   format last n lines of t1 as matrix, default 10
                 ⍺  sort t1   ascending sort lines of t1 according to ⍺, default t1
                 ⍺ rsort t1   (sort -r) descending sort lines of t1 according to ⍺, default t1
-                r  grep t1   get lines of t1 matching s, default files
-                r vgrep t1   (grep -v) get lines of t1 not matching s, default files (return dirs)
+                r  grep t1   lines of t1 matching r, default files
+                r vgrep t1   (grep -v) lines of t1 not matching r, default files (return dirs)
+                r grepn fn   (grep -n) files, line numbers and matches of r in f1, default size and date
                  f  tee t1   write t1 to f and return it, pipes are closed, default ⎕
                  f teea t1   (tee -a) append t1 to f and return it, pipes are not closed, default ⍞
                    r wc t1   count occurences of r in t1, default \S+ (words)
                   r wcl t1   (wc -l) count lines with occurences of r in t1, default .* (all lines)
               s ... sed t1   apply substitution pattern /a/b/... (or |a|b|.., etc), default -\s+$
-              ...(⍺⍺ ed)f1   apply ⍺∘⍺⍺ on f and write back to f, ⍺⍺ string to run with exec, default ⊢
+              ...(⍺⍺ ed)fn   apply ⍺∘⍺⍺ on f and write back to f, ⍺⍺ string to run with exec, default ⊢
 
           ⍺(⍺⍺ x ⍵⍵)s1 ...   substitute by ⍺⍺ or apply ⍺∘⍺⍺ on matches of ⍵⍵ in s, default ⊢
           ⍺(⍺⍺ y ⍵⍵)s1 ...   substitute by ⍺⍺ or apply ⍺∘⍺⍺ between matches of ⍵⍵ in s, default ⊢
@@ -184,7 +186,7 @@ It replaces standard UNIX binaries with APL functions that compose with the rest
             s2 join s1 ...   join elements of ⍵ with ⍺, default NL or empty
 
         with t1 t2 path or glob string, or matrix, or list of lines, or pipe (negated to not close),
-        n number, r regex string, s s1 s2 ... strings, f1 file name
+        n number, r regex string, s s1 s2 ... strings, fn file name
 
         The variables TAB CR LF contain tab, carriage return and linefeed characters.
         CRLF is the windows new line, and NL the native one (LF or CRLF)
@@ -204,4 +206,21 @@ Installation with [Tatin](tatin.dev) (includes user command):
 ```apl
       ]TATIN.InstallPackages [tatin-test]yiyus-nu [MyUCMDs]
       ]UReset
+```
+
+## User command
+
+```
+    ───────────────────────────────────────────────────────────────────────────────
+
+]NOTUNIX.nu
+
+Run expression inside nu namespace. nu is NOT UNIX
+]nu man  ⍝ full manual
+]nu      ⍝ REPL (empty to leave)
+
+The REPL will run the given expression in the nu namespace.
+If the expression is a directory name, it will change to that
+directory and list its contents (using lc)
+
 ```

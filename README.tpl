@@ -33,3 +33,9 @@ Installation with [Tatin](tatin.dev) (includes user command):
       ]TATIN.InstallPackages [tatin-test]yiyus-nu [MyUCMDs]
       ]UReset
 ```
+
+## User command
+
+```
+<(⊂4⍴''),¨↓⎕SE.UCMD'nu -???'
+```
