@@ -13,10 +13,18 @@
       r.Parse←'' ''
     ∇ 
 
+    ∇ r←Cmd input
+      :If{0::0 ⋄ 1=⊃1⎕NINFO⍵}input
+          r←⎕SE.nu.lc''⊣⎕←⎕SE.nu.cd''⊣⎕SE.nu.cd input
+      :Else
+          r←⎕SE.nu.{85:: ⋄ ⎕←1(85⌶)⍵}input
+      :EndIf
+    ∇
+
     ∇ r←Run(cmd input);p
       :Select cmd
       :Case 'nu'
-          :If 0<≢input ⋄ r←⎕SE.nu⍎input ⋄ →0 ⋄ :EndIf
+          :If 0<≢input ⋄ r←Cmd input ⋄ →0 ⋄ :EndIf
           p←¯10↑']nu '
       ∆R: ⍞←p ⋄ input←⍞
           :Trap 0
@@ -28,7 +36,7 @@
                   :If('-'=⊃input)∧'?',⍛≡∪1↓input
                       ⎕SE.UCMD'nu ',input
                   :Else
-                      ⎕SE.nu.{85:: ⋄ ⎕←1(85⌶)⍵}input
+                      ⎕←Cmd input
                   :EndIf
               :EndIf
           :Else
@@ -47,6 +55,12 @@
           r←⊂List[1].Desc,'. nu is NOT UNIX'
           r,←⊂']nu man  ⍝ full manual'
           r,←⊂']nu      ⍝ REPL (empty to leave)'
+          :If level>0
+              r,←⊂''
+              r,←⊂'The REPL will run the given expression in the nu namespace.'
+              r,←⊂'If the expression is a directory name, it will change to that'
+              r,←⊂'directory and list its contents (using lc)'
+          :EndIf
       :Case 'PATH'
           r←⊂List[2].Desc
       :EndSelect
