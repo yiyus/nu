@@ -216,8 +216,9 @@ Installation with [Tatin](tatin.dev) (includes user command):
 ]NOTUNIX.nu
 
 Run expression inside nu namespace. nu is NOT UNIX
-]nu man  ⍝ full manual
-]nu      ⍝ REPL (empty to leave)
+]nu man   ⍝ full manual
+]nu expr  ⍝ run expr in nu mamespace and return result
+]nu       ⍝ REPL (empty to leave)
 
 The REPL will run the given expression in the nu namespace.
 If the expression is a directory name, it will change to that

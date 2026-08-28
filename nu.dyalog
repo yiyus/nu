@@ -62,8 +62,9 @@
       :Select cmd
       :Case 'nu'
           r←⊂List[1].Desc,'. nu is NOT UNIX'
-          r,←⊂']nu man  ⍝ full manual'
-          r,←⊂']nu      ⍝ REPL (empty to leave)'
+          r,←⊂']nu man   ⍝ full manual'
+          r,←⊂']nu expr  ⍝ run expr in nu mamespace and return result'
+          r,←⊂']nu       ⍝ REPL (empty to leave)'
           :If level>0
               r,←⊂''
               r,←⊂'The REPL will run the given expression in the nu namespace.'
