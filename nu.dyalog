@@ -2,6 +2,7 @@
 ⍝ Custom user command
 
     ⎕IO←1 ⋄ ⎕ML←1
+    ⎕SE.⎕EX'nu'
     ⎕SE.Tatin.LoadDependencies⊂'[MyUCMDs]/nu'
 
     ∇ r←List
